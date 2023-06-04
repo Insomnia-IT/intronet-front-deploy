@@ -10,6 +10,8 @@ jobs:
     runs-on: [self-hosted, acsrv]
     steps:
       - uses: actions/checkout@v3
+      - name: pull
+        run: docker-compose pull
       - name: run image
         run: docker-compose up -d
       - name: cleanup docker containers
