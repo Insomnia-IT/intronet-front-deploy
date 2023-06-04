@@ -8,9 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: [self-hosted, acsrv]
-    env:
-      IMAGE_NAME: fransuane/intronet-front
-      IMAGE_NAME_SERVER: fransuane/intronet-server
     steps:
       - uses: actions/checkout@v3
       - name: run image
