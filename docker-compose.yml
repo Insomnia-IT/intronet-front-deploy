@@ -33,7 +33,10 @@ services:
       - db
       - logstash
     volumes:
-      - ./secret.key:/app/secret.key:rw
+      - type: bind
+        source: ./secret.key
+        target: /app/secret.key
+        read_only: false
     depends_on:
       - db
       - logstash
