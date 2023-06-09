@@ -38,13 +38,13 @@ services:
 
   db:
     container_name: insomnia_couchdb
-    image: couchdb
+    image: couchdb:3.3.2
     environment:
       COUCHDB_USER: admin
       COUCHDB_PASSWORD: password
     restart: always
     ports:
-      - "5984:5984"
+      - 5984:5984
     networks:
       apps:
     volumes:
@@ -74,6 +74,8 @@ services:
       discovery.seed_hosts: logstash
       LS_JAVA_OPTS: "-Xms512m -Xmx512m"
       ELASTIC_PASSWORD: ELASTIC_PASSWORD
+    ports:
+      - 5000:5000
     volumes:
       - ./logstash.config:/usr/share/logstash/pipeline/logstash-nginx.config:ro
     depends_on:
@@ -86,11 +88,11 @@ services:
   kibana:
     image: kibana:7.16.1
     container_name: insomnia_kibana
-    ports:
-      - "5601:5601"
     environment:
       - "SERVER_BASEPATH=/kibana"
       - "SERVER_HOST=0.0.0.0"
+    ports:
+      - 5601:5601
     depends_on:
       - elasticsearch
     networks:
