@@ -30,6 +30,8 @@ services:
     links:
       - db
       - logstash
+    volumes:
+      - ./secret.key:/app/secret.key:rw
     depends_on:
       - db
       - logstash
