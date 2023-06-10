@@ -26,8 +26,8 @@ services:
     image: "${IMAGE_NAME_BACKEND}:latest"
     container_name: insomnia_intronet_server
     environment:
-      - PORT=80
-      - DATABASE=http://admin:${DB_PASSWORD}@db:5984
+      PORT: "80"
+      DATABASE: "http://admin:${DB_PASSWORD}@db:5984"
     restart: always
     links:
       - db
@@ -48,7 +48,7 @@ services:
     image: couchdb
     environment:
       COUCHDB_USER: admin
-      COUCHDB_PASSWORD: ${DB_PASSWORD}
+      COUCHDB_PASSWORD: "${DB_PASSWORD}"
     restart: always
     networks:
       apps:
