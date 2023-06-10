@@ -27,7 +27,7 @@ services:
     container_name: insomnia_intronet_server
     environment:
       - PORT=80
-      - DATABASE=http://admin:password@db:5984
+      - DATABASE=http://admin:${DB_PASSWORD}@db:5984
     restart: always
     links:
       - db
@@ -48,7 +48,7 @@ services:
     image: couchdb
     environment:
       COUCHDB_USER: admin
-      COUCHDB_PASSWORD: password
+      COUCHDB_PASSWORD: ${DB_PASSWORD}
     restart: always
     networks:
       apps:
@@ -94,6 +94,8 @@ services:
     environment:
       - "SERVER_BASEPATH=/kibana"
       - "SERVER_HOST=0.0.0.0"
+      - "ELASTICSEARCH_USERNAME=admin"
+      - "ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}"
     depends_on:
       - elasticsearch
     networks:
