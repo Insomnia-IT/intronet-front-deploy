@@ -47,13 +47,14 @@ services:
 
   db:
     container_name: insomnia_couchdb
-    image: couchdb
+    image: couchdb:3.3.2
     environment:
       COUCHDB_USER: admin
       COUCHDB_PASSWORD: "${DB_PASSWORD}"
     restart: always
     networks:
       apps:
+      grafana:
     volumes:
       - couchdb_data:/opt/couchdb/data
       - ./couchdb.ini:/opt/couchdb/etc/local.ini
@@ -115,8 +116,10 @@ services:
       - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
     depends_on:
       - influxdb
+      - db
     links:
       - influxdb
+      - db
     networks:
       telegraf:
 
