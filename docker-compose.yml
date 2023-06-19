@@ -17,11 +17,13 @@ services:
       - server
       - kibana
       - grafana
+      - influxdb
     depends_on:
       - db
       - server
       - kibana
       - grafana
+      - influxdb
 
   server:
     image: "${IMAGE_NAME_BACKEND}:latest"
@@ -127,6 +129,7 @@ services:
       - influxdb_data:/var/lib/influxdb
     networks:
       telegraf:
+      apps:
 
   grafana:
     image: grafana/grafana:9.5.3
