@@ -54,7 +54,7 @@ services:
     restart: always
     networks:
       apps:
-      grafana:
+      telegraf:
     volumes:
       - couchdb_data:/opt/couchdb/data
       - ./couchdb.ini:/opt/couchdb/etc/local.ini
@@ -112,6 +112,8 @@ services:
     image: telegraf:1.26.3-alpine
     container_name: telegraf
     restart: always
+    environment:
+      DB_PASSWORD: "${DB_PASSWORD}"
     volumes:
       - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
     depends_on:
@@ -124,6 +126,8 @@ services:
       telegraf:
 
   influxdb:
+    ports:
+      - '8086:8086'
     image: influxdb:1.8.10-alpine
     container_name: influxdb
     restart: always
