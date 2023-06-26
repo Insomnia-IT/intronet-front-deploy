@@ -5,11 +5,9 @@ services:
     image: "${IMAGE_NAME}:latest"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ~/cert/cert-crt.pem:/etc/nginx/ssl/cert.crt
-      - ~/cert/cert-key.pem:/etc/nginx/ssl/cert.key
     restart: always
     ports:
-      - "443:443"
+      - "4000:80"
     networks:
       apps:
     links:
@@ -53,7 +51,7 @@ services:
     restart: always
     networks:
       apps:
-      grafana:
+      telegraf:
     volumes:
       - couchdb_data:/opt/couchdb/data
       - ./couchdb.ini:/opt/couchdb/etc/local.ini
