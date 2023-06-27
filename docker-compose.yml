@@ -53,7 +53,7 @@ services:
     restart: always
     networks:
       apps:
-      grafana:
+      telegraf:
     volumes:
       - couchdb_data:/opt/couchdb/data
       - ./couchdb.ini:/opt/couchdb/etc/local.ini
