@@ -13,15 +13,9 @@ services:
     links:
       - db
       - server
-      - kibana
-      - grafana
-      - influxdb
     depends_on:
       - db
       - server
-      - kibana
-      - grafana
-      - influxdb
 
   server:
     image: "${IMAGE_NAME_BACKEND}:latest"
