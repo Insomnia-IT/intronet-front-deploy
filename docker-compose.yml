@@ -9,6 +9,7 @@ services:
       - ~/cert/cert-key.pem:/etc/nginx/ssl/cert.key
     restart: always
     ports:
+      - "80:80"
       - "443:443"
     networks:
       apps:
@@ -121,8 +122,6 @@ services:
       telegraf:
 
   influxdb:
-    ports:
-      - '8086:8086'
     image: influxdb:1.8.10-alpine
     restart: always
     environment:
@@ -151,6 +150,19 @@ services:
       - grafana_data:/var/lib/grafana
     networks:
       telegraf:
+      apps:
+
+  tank:
+    image: yandex/yandex-tank
+    volumes:
+      - "./:/var/loadtest/"
+    depends_on:
+      - web
+      - server
+    links:
+      - web
+      - server
+    networks:
       apps:
 
 volumes:
