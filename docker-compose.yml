@@ -48,6 +48,8 @@ services:
     environment:
       COUCHDB_USER: admin
       COUCHDB_PASSWORD: "${DB_PASSWORD}"
+    ports:
+      - "5984:5984"
     restart: always
     networks:
       apps:
