@@ -2,15 +2,15 @@ version: "3.6"
 
 services:
   web:
-    image: "${IMAGE_NAME}:latest"
+    image: "georgjung/nginx-brotli:1.25-alpine"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ~/cert/cert-crt.pem:/etc/nginx/ssl/cert.crt
-      - ~/cert/cert-key.pem:/etc/nginx/ssl/cert.key
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ~/cert/cert-crt.pem:/etc/nginx/ssl/cert.crt:ro
+      - ~/cert/cert-key.pem:/etc/nginx/ssl/cert.key:ro
     restart: always
     ports:
-      - "80:80"
-      - "443:443"
+      - "1180:80"
+      - "11443:443"
     networks:
       apps:
     links:
@@ -26,20 +26,25 @@ services:
       - grafana
       - influxdb
 
+  front:
+    image: "ghcr.io/insomnia-it/front:${GITHUB_SHA}"
+    restart: always
+    networks:
+      apps:
+
   server:
-    image: "${IMAGE_NAME_BACKEND}:latest"
+    image: "ghcr.io/insomnia-it/server:${GITHUB_SHA}"
     environment:
       PORT: "80"
-      DATABASE: "http://admin:${DB_PASSWORD}@db:5984"
+      DATABASE: "mongodb://db:27017"
+      MONGODB_USER: "admin"
+      MONGODB_PASSWORD: "${DB_PASSWORD}"
     restart: always
     links:
       - db
       - logstash
     volumes:
-      - type: bind
-        source: ./secret.key
-        target: /app/secret.key
-        read_only: false
+      - "./secrets:/web/secrets"
     depends_on:
       - db
       - logstash
@@ -47,17 +52,32 @@ services:
       apps:
 
   db:
-    image: couchdb:3.3.2
+    image: mongo:7.0.4
     environment:
-      COUCHDB_USER: admin
-      COUCHDB_PASSWORD: "${DB_PASSWORD}"
+      MONGO_INITDB_ROOT_USERNAME: "admin"
+      MONGO_INITDB_ROOT_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - "./data:/data/db"
     restart: always
     networks:
       apps:
       telegraf:
-    volumes:
-      - couchdb_data:/opt/couchdb/data
-      - ./couchdb.ini:/opt/couchdb/etc/local.ini
+
+  dbui:
+    image: mongo-express:1.0.0-18-alpine3.18
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: "admin"
+      ME_CONFIG_MONGODB_ADMINPASSWORD: "${DB_PASSWORD}"
+      ME_CONFIG_BASICAUTH_USERNAME: "admin"
+      ME_CONFIG_BASICAUTH_PASSWORD: "${DB_PASSWORD}"
+      ME_CONFIG_MONGODB_SERVER: "db"
+      ME_CONFIG_MONGODB_PORT: "27017"
+      ME_CONFIG_SITE_BASEURL: "/db/"
+    networks:
+      - apps
+    depends_on:
+      - db
+    restart: always
 
   elasticsearch:
     image: elasticsearch:7.16.1
@@ -152,21 +172,20 @@ services:
       telegraf:
       apps:
 
-  tank:
-    image: yandex/yandex-tank
-    volumes:
-      - "./:/var/loadtest/"
-    depends_on:
-      - web
-      - server
-    links:
-      - web
-      - server
-    networks:
-      apps:
+#  tank:
+#    image: yandex/yandex-tank
+#    volumes:
+#      - "./:/var/loadtest/"
+#    depends_on:
+#      - web
+#      - server
+#    links:
+#      - web
+#      - server
+#    networks:
+#      apps:
 
 volumes:
-  couchdb_data:
   elastic_data:
   grafana_data: {}
   influxdb_data: {}
