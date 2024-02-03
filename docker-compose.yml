@@ -44,7 +44,7 @@ services:
       - db
       - logstash
     volumes:
-      - "./secrets:/web/secrets"
+      - "./secrets:/app/secrets"
     depends_on:
       - db
       - logstash
