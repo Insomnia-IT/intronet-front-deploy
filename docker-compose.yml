@@ -40,6 +40,7 @@ services:
       GOOGLE_SHEET_ID: "${GOOGLE_SHEET_ID}"
       GOOGLE_SHEET_EMAIL: "${GOOGLE_SHEET_EMAIL}"
       GOOGLE_SHEET_PRIVATE_KEY: "${GOOGLE_SHEET_PRIVATE_KEY}"
+      METEOBLUE_API_KEY: "${METEOBLUE_API_KEY}"
     restart: always
     links:
       - db
